@@ -38,6 +38,6 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
     // countTimer('30 juny 2020');
-    setInterval(countTimer, 1000, '30 juny 2020');
+    setInterval(countTimer, 1000, '1 july 2020');
 });
 
