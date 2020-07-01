@@ -75,9 +75,9 @@ window.addEventListener('DOMContentLoaded', () => {
         const popupAnim = () => {
             count++;
             popup.style.display = 'block';
-            popupContent.style.top = (count * 4) + 'px';
+            popupContent.style.top = count + '%';
             let rafId = requestAnimationFrame(popupAnim);
-            if(count >= 89) {
+            if(count >= 30) {
                 cancelAnimationFrame(rafId);
             }
         };
