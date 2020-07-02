@@ -45,37 +45,25 @@ window.addEventListener('DOMContentLoaded', () => {
 
     //menu
     const toggleMenu = () => {
-        const menuBtn = document.querySelector('.menu');
-
         const heandlerMenu = () => {
             menu.classList.toggle('active-menu');
         };
 
-        menu.addEventListener('click', (event) => {
+        document.body.addEventListener('click', (event) => {
             let target = event.target,
+                targetBtnMenu = target.closest('.menu'),
                 targetCloseMenu = target.closest('.close-btn'),
-                targetMenuItem = target.closest('menu>ul>li');
-
-            if(targetCloseMenu || targetMenuItem) {
-                heandlerMenu();
+                targetMenuItem = target.closest('menu>ul>li'),
+                targetMenu = target.closest('.active-menu');
+            
+            if(!targetMenu && !targetBtnMenu && !targetCloseMenu && !targetMenuItem) {
+                menu.classList.remove('active-menu');
             }
+
+            if(targetBtnMenu || targetCloseMenu || targetMenuItem) {
+                heandlerMenu();
+            } 
         });
-
-        menuBtn.addEventListener('click', () => {
-            heandlerMenu();
-        });
-
-        // document.body.addEventListener('click', (event) => {
-        //     let target = event.target,
-        //         targetMenu = target.closest('menu'),
-        //         targetBtnMenu = target.closest('.menu'),
-        //         targetCloseMenu = target.closest('.close-btn'),
-        //         targetMenuItem = target.closest('menu>ul>li');
-
-        //     if(targetBtnMenu || targetCloseMenu || targetMenuItem) {
-        //         heandlerMenu();
-        //     }
-        // });
     };
     toggleMenu();
 
