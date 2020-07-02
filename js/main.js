@@ -45,23 +45,37 @@ window.addEventListener('DOMContentLoaded', () => {
 
     //menu
     const toggleMenu = () => {
-        const btnMenu = document.querySelector('.menu'),
-            closeBtn = document.querySelector('.close-btn');
-        
+        const menuBtn = document.querySelector('.menu');
+
         const heandlerMenu = () => {
             menu.classList.toggle('active-menu');
         };
 
-        document.body.addEventListener('click', (event) => {
+        menu.addEventListener('click', (event) => {
             let target = event.target,
-                targetBtnMenu = target.closest('.menu');
-            if(targetBtnMenu) {
+                targetCloseMenu = target.closest('.close-btn'),
+                targetMenuItem = target.closest('menu>ul>li');
+
+            if(targetCloseMenu || targetMenuItem) {
                 heandlerMenu();
-            } 
+            }
         });
 
-        closeBtn.addEventListener('click', heandlerMenu);
-        menuItem.forEach( item => item.addEventListener('click', heandlerMenu));
+        menuBtn.addEventListener('click', () => {
+            heandlerMenu();
+        });
+
+        // document.body.addEventListener('click', (event) => {
+        //     let target = event.target,
+        //         targetMenu = target.closest('menu'),
+        //         targetBtnMenu = target.closest('.menu'),
+        //         targetCloseMenu = target.closest('.close-btn'),
+        //         targetMenuItem = target.closest('menu>ul>li');
+
+        //     if(targetBtnMenu || targetCloseMenu || targetMenuItem) {
+        //         heandlerMenu();
+        //     }
+        // });
     };
     toggleMenu();
 
@@ -107,7 +121,9 @@ window.addEventListener('DOMContentLoaded', () => {
             let target = event.target;
             target = target.closest('.popup-content');
             // target === null ? closePopup() : '';
-            if(!target) closePopup();
+            if(!target) {
+                closePopup();
+            }
         });
     };
     togglePopup();
