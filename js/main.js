@@ -10,7 +10,7 @@ window.addEventListener('DOMContentLoaded', () => {
         command = document.querySelector('#command'),
         connect = document.querySelector('#connect');
 
-    //Таймер
+    //timer
     const countTimer = (deadline) => {
         const timerHours = document.querySelector('#timer-hours'),
             timerMinute = document.querySelector('#timer-minutes'),
@@ -38,16 +38,12 @@ window.addEventListener('DOMContentLoaded', () => {
                 timerMinute.textContent = '00';
                 timerSeconds.textContent = '00';
             }
-
-            if(timer.timeRemainig > 0) {
-                setInterval(updateClock, 1000);
-            }
         };
         updateClock();
     };
     setInterval(countTimer, 1000, '15 july 2020');
 
-    //Меню
+    //menu
     const toggleMenu = () => {
         const btnMenu = document.querySelector('.menu'),
             closeBtn = document.querySelector('.close-btn');
@@ -56,7 +52,14 @@ window.addEventListener('DOMContentLoaded', () => {
             menu.classList.toggle('active-menu');
         };
 
-        btnMenu.addEventListener('click', heandlerMenu);
+        document.body.addEventListener('click', (event) => {
+            let target = event.target,
+                targetBtnMenu = target.closest('.menu');
+            if(targetBtnMenu) {
+                heandlerMenu();
+            } 
+        });
+
         closeBtn.addEventListener('click', heandlerMenu);
         menuItem.forEach( item => item.addEventListener('click', heandlerMenu));
     };
@@ -99,6 +102,13 @@ window.addEventListener('DOMContentLoaded', () => {
             });
         });
         popupClose.addEventListener('click', closePopup);
+
+        popup.addEventListener('click', (event) => {
+            let target = event.target;
+            target = target.closest('.popup-content');
+            // target === null ? closePopup() : '';
+            if(!target) closePopup();
+        });
     };
     togglePopup();
 
@@ -127,4 +137,37 @@ window.addEventListener('DOMContentLoaded', () => {
         });
     };
     scrollPage();
+
+    //tabs
+    const tabs = () => {
+        const serviceHeader = document.querySelector('.service-header'),
+            serviceHeaderTab = serviceHeader.querySelectorAll('.service-header-tab'),
+            serviceTab = document.querySelectorAll('.service-tab');
+
+        const toogleServiceTab = (index) => {
+            for(let i = 0; i < serviceTab.length; i++) {
+                if(index === i) {
+                    serviceHeaderTab[i].classList.add('active');
+                    serviceTab[i].classList.remove('d-none');
+                } else {
+                    serviceHeaderTab[i].classList.remove('active');
+                    serviceTab[i].classList.add('d-none');
+                }
+            }
+        };
+
+        serviceHeader.addEventListener('click', (event) => {
+            let target = event.target;
+            
+            target = target.closest('.service-header-tab');
+            if(target) {
+                serviceHeaderTab.forEach( (item ,i) => {
+                    if(item === target) {
+                        toogleServiceTab(i);
+                    }
+                });
+            }
+        });
+    };
+    tabs();
 });
