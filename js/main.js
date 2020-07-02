@@ -174,4 +174,44 @@ window.addEventListener('DOMContentLoaded', () => {
         });
     };
     tabs();
+
+    //slider
+    const slider = () => {
+        const slider = document.querySelector('.portfolio-content'),
+            slide = document.querySelectorAll('.portfolio-item'),
+            dot = document.querySelectorAll('.dot'),
+            btns = document.querySelectorAll('.portfolio-btn');
+
+        let currentSlide = 0;
+
+        const next = (elem, index, strClass) => {
+            elem[index].classList.add(strClass);
+        };
+
+        const prev = (elem, index, strClass) => {
+            elem[index].classList.remove(strClass);
+        };
+
+        const playSlide = () => {
+            prev(slide, currentSlide, 'portfolio-item-active');
+            prev(dot, currentSlide, 'dot-active');
+            currentSlide++;
+            if(currentSlide >= slide.length) {
+                currentSlide = 0;
+            }
+            next(slide, currentSlide, 'portfolio-item-active');
+            next(dot, currentSlide, 'dot-active');
+        };
+
+        const startSlider = (time) => {
+            setInterval(playSlide, time);
+        };
+
+        const stopSlider = () => {
+
+        };
+
+        startSlider(10000);
+    };
+    slider();
 });
