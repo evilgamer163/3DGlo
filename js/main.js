@@ -326,7 +326,31 @@ window.addEventListener('DOMContentLoaded', () => {
                 total = price * typeValye * squareValue * countValue * dayValue;
             }
 
-            totalValue.textContent = total;
+            const animate = ({ duration, draw, timing }) => {
+                let start = performance.now();
+        
+                requestAnimationFrame(function animate(time) {
+                    let timeFraction = (time - start) / duration;
+                    if (timeFraction > 1) {
+                        timeFraction = 1;
+                    }
+                    let progress = timing(timeFraction);
+                    draw(progress);
+                    if (timeFraction < 1) {
+                        requestAnimationFrame(animate);
+                    }
+                });
+            };
+        
+            animate({
+                duration: 500,
+                timing(timeFraction) {
+                    return timeFraction;
+                },
+                draw(progress) {
+                    totalValue.textContent = Math.floor(progress * total);
+                }
+            });
         };
 
         calcBlock.addEventListener('change', (event) => {
