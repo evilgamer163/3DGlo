@@ -303,7 +303,12 @@ window.addEventListener('DOMContentLoaded', () => {
             calcSquare = document.querySelector('.calc-square'),
             calcCount = document.querySelector('.calc-count'),
             calcDay = document.querySelector('.calc-day'),
-            totalValue = document.getElementById('total');
+            totalValue = document.getElementById('total'),
+            calcImg = document.querySelector('.calc-img');
+
+        calcType.addEventListener('change', () => {
+            calcImg.src = calcType.options[calcType.selectedIndex].dataset.img;
+        });
 
         const countSum = () => {
             let total = 0,
