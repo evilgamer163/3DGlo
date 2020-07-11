@@ -361,8 +361,8 @@ window.addEventListener('DOMContentLoaded', () => {
         calcBlock.addEventListener('change', (event) => {
             let target = event.target;
 
-            if(target.matches('.calc-type') || target.matches('.calc-square')
-                || target.matches('.calc-day') || target.matches('.calc-count')) {
+            if(target.matches('.calc-type') || target.matches('.calc-square') ||
+                target.matches('.calc-day') || target.matches('.calc-count')) {
                     countSum();
                 }
         });
@@ -380,15 +380,158 @@ window.addEventListener('DOMContentLoaded', () => {
 
     //send-ajax=form
     const sendForm = () => {
-        const errorMessage = 'Что то пошло не так как мы планировали...',
-            loadMessage = 'Загрузка...',
-            successMessage = 'Спасибо! Скоро с вами свяжутся!';
+        const clearInput = (form) => {
+            form.forEach( item => {
+                item.value = '';
+            });
+        };
 
-        const form = document.getElementById('form1');
-        console.log(form);
+        const errorMessage = 'Что то пошло не так как мы планировали...',
+            successMessage = 'Спасибо! Скоро с вами свяжутся!',
+            regText = /[а-яА-Я]/,
+            regPhone = /^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$/;
+
+        const form = document.getElementById('form1'),
+            formInputs = form.querySelectorAll('input'),
+            formModal = document.getElementById('form3'),
+            formModalInputs = formModal.querySelectorAll('input'),
+            formConnect = document.getElementById('form2'),
+            formConnectInputs = formConnect.querySelectorAll('input'),
+            loaded = document.querySelector('.loaded');
+
         const statusMessage = document.createElement('div');
-        statusMessage.textContent = '11111011101010101';
-        form.appendChild(statusMessage);
+        statusMessage.style.cssText = `
+            font-size: 2rem;
+            color: #1DA3FE;
+        `;
+        
+        form.addEventListener('submit', (event) => {
+            event.preventDefault();
+            form.append(statusMessage);
+
+            let formName = form.querySelector('.form-name'),
+                formPhone = form.querySelector('.form-phone');
+            
+            if(regText.test(formName.value) && regPhone.test(formPhone.value)) {
+                const request = new XMLHttpRequest();
+                request.addEventListener('readystatechange', () => {
+                    loaded.style.display = 'block';
+
+                    if(request.readyState !== 4) {
+                        return;
+                    }
+
+                    if(request.status === 200) {
+                        loaded.style.display = 'none';
+                        statusMessage.textContent = successMessage;
+                    } else {
+                        loaded.style.display = 'none';
+                        statusMessage.textContent = errorMessage;
+                    }
+                });
+
+                request.open('POST', './server.php');
+                request.setRequestHeader('Content-Type', 'application/json');
+                const formData = new FormData(form);
+                let body = {};
+                for(let value of formData.entries()) {
+                    body[value[0]] = value[1];
+                }
+                request.send(JSON.stringify(body));
+            } else {
+                statusMessage.textContent = 'Некорректные данные!';
+                return;
+            }
+
+            clearInput(formInputs);
+        });
+
+        formModal.addEventListener('submit', (event) => {
+            event.preventDefault();
+            formModal.append(statusMessage);
+
+            let formName = formModal.querySelector('.form-name'),
+                formPhone = formModal.querySelector('.form-phone');
+
+            if(regText.test(formName.value) && regPhone.test(formPhone.value)) {
+                const request = new XMLHttpRequest();
+                request.addEventListener('readystatechange', () => {
+                    loaded.style.display = 'block';
+
+                    if(request.readyState !== 4) {
+                        return;
+                    }
+
+                    if(request.status === 200) {
+                        loaded.style.display = 'none';
+                        statusMessage.textContent = successMessage;
+                    } else {
+                        loaded.style.display = 'none';
+                        statusMessage.textContent = errorMessage;
+                    }
+                });
+
+                request.open('POST', './server.php');
+                request.setRequestHeader('Content-Type', 'application/json');
+                const formData = new FormData(formModal);
+                let body = {};
+                for(let value of formData.entries()) {
+                    body[value[0]] = value[1];
+                }
+                request.send(JSON.stringify(body));
+            } else {
+                statusMessage.textContent = 'Некорректные данные!';
+                return;
+            }
+
+            clearInput(formModalInputs);
+        });
+
+        formConnect.addEventListener('submit', (event) => {
+            event.preventDefault();
+            formConnect.append(statusMessage);
+
+            let formName = formConnect.querySelector('.top-form'),
+                formPhone = formConnect.querySelector('.form-phone'),
+                formMessage = formConnect.querySelector('.mess');
+
+                console.log(formMessage.value);
+
+            if(regText.test(formName.value) && regPhone.test(formPhone.value) && regText.test(formMessage.value)) {
+                const request = new XMLHttpRequest();
+                request.addEventListener('readystatechange', () => {
+                    loaded.style.display = 'block';
+
+                    if(request.readyState !== 4) {
+                        return;
+                    }
+
+                    if(request.status === 200) {
+                        loaded.style.display = 'none';
+                        statusMessage.textContent = successMessage;
+                    } else {
+                        loaded.style.display = 'none';
+                        statusMessage.textContent = errorMessage;
+                    }
+                });
+
+                request.open('POST', './server.php');
+                request.setRequestHeader('Content-Type', 'multipart/form-data');
+
+                const formData = new FormData(formConnect);
+
+                formData.forEach( (value, key) => {
+                    formData[key] = value;
+                });
+
+                request.send(formData);
+            } else {
+                statusMessage.textContent = 'Некорректные данные!';
+                return;
+            }
+
+            clearInput(formConnectInputs);
+        });
     };
     sendForm();
 });
