@@ -404,15 +404,19 @@ window.addEventListener('DOMContentLoaded', () => {
             font-size: 2rem;
             color: #1DA3FE;
         `;
+
+        let formName, formPhone, formMessage;
         
         form.addEventListener('submit', (event) => {
             event.preventDefault();
             form.append(statusMessage);
 
-            let formName = form.querySelector('.form-name'),
-                formPhone = form.querySelector('.form-phone');
+            formName = form.querySelector('.form-name');
+            formPhone = form.querySelector('.form-phone');
             
             if(regText.test(formName.value) && regPhone.test(formPhone.value)) {
+                formName.style.border = '';
+                formPhone.style.border = '';
                 const request = new XMLHttpRequest();
                 request.addEventListener('readystatechange', () => {
                     loaded.style.display = 'block';
@@ -437,9 +441,23 @@ window.addEventListener('DOMContentLoaded', () => {
                 for(let value of formData.entries()) {
                     body[value[0]] = value[1];
                 }
+
                 request.send(JSON.stringify(body));
+
+                setTimeout(() => {
+                    statusMessage.textContent = '';
+                }, 5000);
             } else {
                 statusMessage.textContent = 'Некорректные данные!';
+                setTimeout(() => {
+                    statusMessage.textContent = '';
+                }, 5000);
+                if(!regText.test(formName.value)) {
+                    formName.style.border = '2px solid red';
+                }
+                if(!regPhone.test(formPhone.value)) {
+                    formPhone.style.border = '2px solid red';
+                }
                 return;
             }
 
@@ -450,10 +468,12 @@ window.addEventListener('DOMContentLoaded', () => {
             event.preventDefault();
             formModal.append(statusMessage);
 
-            let formName = formModal.querySelector('.form-name'),
-                formPhone = formModal.querySelector('.form-phone');
+            formName = formModal.querySelector('.form-name');
+            formPhone = formModal.querySelector('.form-phone');
 
             if(regText.test(formName.value) && regPhone.test(formPhone.value)) {
+                formName.style.border = '';
+                formPhone.style.border = '';
                 const request = new XMLHttpRequest();
                 request.addEventListener('readystatechange', () => {
                     loaded.style.display = 'block';
@@ -479,8 +499,21 @@ window.addEventListener('DOMContentLoaded', () => {
                     body[value[0]] = value[1];
                 }
                 request.send(JSON.stringify(body));
+
+                setTimeout(() => {
+                    statusMessage.textContent = '';
+                }, 5000);
             } else {
                 statusMessage.textContent = 'Некорректные данные!';
+                setTimeout(() => {
+                    statusMessage.textContent = '';
+                }, 5000);
+                if(!regText.test(formName.value)) {
+                    formName.style.border = '2px solid red';
+                }
+                if(!regPhone.test(formPhone.value)) {
+                    formPhone.style.border = '2px solid red';
+                }
                 return;
             }
 
@@ -491,13 +524,14 @@ window.addEventListener('DOMContentLoaded', () => {
             event.preventDefault();
             formConnect.append(statusMessage);
 
-            let formName = formConnect.querySelector('.top-form'),
-                formPhone = formConnect.querySelector('.form-phone'),
-                formMessage = formConnect.querySelector('.mess');
-
-                console.log(formMessage.value);
+            formName = formConnect.querySelector('.top-form');
+            formPhone = formConnect.querySelector('.form-phone');
+            formMessage = formConnect.querySelector('.mess');
 
             if(regText.test(formName.value) && regPhone.test(formPhone.value) && regText.test(formMessage.value)) {
+                formName.style.border = '';
+                formPhone.style.border = '';
+                formMessage.style.border = '';
                 const request = new XMLHttpRequest();
                 request.addEventListener('readystatechange', () => {
                     loaded.style.display = 'block';
@@ -525,8 +559,24 @@ window.addEventListener('DOMContentLoaded', () => {
                 });
 
                 request.send(formData);
+
+                setTimeout(() => {
+                    statusMessage.textContent = '';
+                }, 5000);
             } else {
                 statusMessage.textContent = 'Некорректные данные!';
+                setTimeout(() => {
+                    statusMessage.textContent = '';
+                }, 5000);
+                if(!regText.test(formName.value)) {
+                    formName.style.border = '2px solid red';
+                }
+                if(!regText.test(formMessage)) {
+                    formMessage.style.border = '2px solid red';
+                }
+                if(!regPhone.test(formPhone.value)) {
+                    formPhone.style.border = '2px solid red';
+                }
                 return;
             }
 
