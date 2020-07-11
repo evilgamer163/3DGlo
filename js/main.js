@@ -377,4 +377,18 @@ window.addEventListener('DOMContentLoaded', () => {
         });
     };
     calculate();
+
+    //send-ajax=form
+    const sendForm = () => {
+        const errorMessage = 'Что то пошло не так как мы планировали...',
+            loadMessage = 'Загрузка...',
+            successMessage = 'Спасибо! Скоро с вами свяжутся!';
+
+        const form = document.getElementById('form1');
+        console.log(form);
+        const statusMessage = document.createElement('div');
+        statusMessage.textContent = '11111011101010101';
+        form.appendChild(statusMessage);
+    };
+    sendForm();
 });
