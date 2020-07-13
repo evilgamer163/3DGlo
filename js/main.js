@@ -380,10 +380,11 @@ window.addEventListener('DOMContentLoaded', () => {
 
     //send-ajax=form
     const sendForm = () => {
-        const clearInput = (form) => {
-            form.forEach( item => {
-                item.value = '';
-            });
+        const clearInput = (formName, formPhone, formMessage, formMail) => {
+            formName.value = '';
+            formPhone.value = '';
+            if(formMessage) formMessage.value = '';
+            formMail.value = '';
         };
 
         const errorMessage = 'Что то пошло не так как мы планировали...',
@@ -391,13 +392,7 @@ window.addEventListener('DOMContentLoaded', () => {
             regText = /[а-яА-Я]/,
             regPhone = /^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$/;
 
-        const form = document.getElementById('form1'),
-            formInputs = form.querySelectorAll('input'),
-            formModal = document.getElementById('form3'),
-            formModalInputs = formModal.querySelectorAll('input'),
-            formConnect = document.getElementById('form2'),
-            formConnectInputs = formConnect.querySelectorAll('input'),
-            loaded = document.querySelector('.loaded');
+        const loaded = document.querySelector('.loaded');
 
         const statusMessage = document.createElement('div');
         statusMessage.style.cssText = `
@@ -405,182 +400,72 @@ window.addEventListener('DOMContentLoaded', () => {
             color: #1DA3FE;
         `;
 
-        let formName, formPhone, formMessage;
-        
-        form.addEventListener('submit', (event) => {
-            event.preventDefault();
-            form.append(statusMessage);
+        let formName, formPhone, formMessage, formMail;
 
-            formName = form.querySelector('.form-name');
-            formPhone = form.querySelector('.form-phone');
-            
-            if(regText.test(formName.value) && regPhone.test(formPhone.value)) {
-                formName.style.border = '';
-                formPhone.style.border = '';
-                const request = new XMLHttpRequest();
-                request.addEventListener('readystatechange', () => {
-                    loaded.style.display = 'block';
+        const forms = document.querySelectorAll('form');
+        forms.forEach( item => {
+            item.addEventListener('submit', (event) => {
+                event.preventDefault();
+                item.append(statusMessage);
 
-                    if(request.readyState !== 4) {
-                        return;
+                formName = item.querySelector('input[name="user_name"]');
+                formPhone = item.querySelector('input[name="user_phone"]');
+                formMessage = item.querySelector('input[name="user_message"]');
+                formMail = item.querySelector('input[name="user_email"]');
+                if((regText.test(formName.value) && regPhone.test(formPhone.value)) ||
+                    (regText.test(formName.value) && regPhone.test(formPhone.value) && regText.test(formMessage.value))) {
+                    formName.style.border = '';
+                    formPhone.style.border = '';
+                    if(formMessage) formMessage.style.border = '';
+                    const request = new XMLHttpRequest();
+                    request.addEventListener('readystatechange', () => {
+                        loaded.style.display = 'block';
+
+                        if(request.readyState !== 4) {
+                            return;
+                        }
+
+                        if(request.status === 200) {
+                            loaded.style.display = 'none';
+                            statusMessage.textContent = successMessage;
+                        } else {
+                            loaded.style.display = 'none';
+                            statusMessage.textContent = errorMessage;
+                        }
+                    });
+
+                    request.open('POST', './server.php');
+                    request.setRequestHeader('Content-Type', 'multipart/form-data');
+
+                    const formData = new FormData(item);
+
+                    formData.forEach( (value, key) => {
+                        formData[key] = value;
+                    });
+
+                    request.send(formData);
+
+                    setTimeout(() => {
+                        statusMessage.textContent = '';
+                    }, 5000);
+                } else {
+                    statusMessage.textContent = 'Некорректные данные!';
+                    setTimeout(() => {
+                        statusMessage.textContent = '';
+                    }, 5000);
+                    if(!regText.test(formName.value)) {
+                        formName.style.border = '2px solid red';
                     }
-
-                    if(request.status === 200) {
-                        loaded.style.display = 'none';
-                        statusMessage.textContent = successMessage;
-                    } else {
-                        loaded.style.display = 'none';
-                        statusMessage.textContent = errorMessage;
+                    if(formMessage && !regText.test(formMessage.value)) {
+                        formMessage.style.border = '2px solid red';
                     }
-                });
-
-                request.open('POST', './server.php');
-                request.setRequestHeader('Content-Type', 'application/json');
-                const formData = new FormData(form);
-                let body = {};
-                for(let value of formData.entries()) {
-                    body[value[0]] = value[1];
-                }
-
-                request.send(JSON.stringify(body));
-
-                setTimeout(() => {
-                    statusMessage.textContent = '';
-                }, 5000);
-            } else {
-                statusMessage.textContent = 'Некорректные данные!';
-                setTimeout(() => {
-                    statusMessage.textContent = '';
-                }, 5000);
-                if(!regText.test(formName.value)) {
-                    formName.style.border = '2px solid red';
-                }
-                if(!regPhone.test(formPhone.value)) {
-                    formPhone.style.border = '2px solid red';
-                }
-                return;
-            }
-
-            clearInput(formInputs);
-        });
-
-        formModal.addEventListener('submit', (event) => {
-            event.preventDefault();
-            formModal.append(statusMessage);
-
-            formName = formModal.querySelector('.form-name');
-            formPhone = formModal.querySelector('.form-phone');
-
-            if(regText.test(formName.value) && regPhone.test(formPhone.value)) {
-                formName.style.border = '';
-                formPhone.style.border = '';
-                const request = new XMLHttpRequest();
-                request.addEventListener('readystatechange', () => {
-                    loaded.style.display = 'block';
-
-                    if(request.readyState !== 4) {
-                        return;
+                    if(!regPhone.test(formPhone.value)) {
+                        formPhone.style.border = '2px solid red';
                     }
-
-                    if(request.status === 200) {
-                        loaded.style.display = 'none';
-                        statusMessage.textContent = successMessage;
-                    } else {
-                        loaded.style.display = 'none';
-                        statusMessage.textContent = errorMessage;
-                    }
-                });
-
-                request.open('POST', './server.php');
-                request.setRequestHeader('Content-Type', 'application/json');
-                const formData = new FormData(formModal);
-                let body = {};
-                for(let value of formData.entries()) {
-                    body[value[0]] = value[1];
+                    return;
                 }
-                request.send(JSON.stringify(body));
-
-                setTimeout(() => {
-                    statusMessage.textContent = '';
-                }, 5000);
-            } else {
-                statusMessage.textContent = 'Некорректные данные!';
-                setTimeout(() => {
-                    statusMessage.textContent = '';
-                }, 5000);
-                if(!regText.test(formName.value)) {
-                    formName.style.border = '2px solid red';
-                }
-                if(!regPhone.test(formPhone.value)) {
-                    formPhone.style.border = '2px solid red';
-                }
-                return;
-            }
-
-            clearInput(formModalInputs);
-        });
-
-        formConnect.addEventListener('submit', (event) => {
-            event.preventDefault();
-            formConnect.append(statusMessage);
-
-            formName = formConnect.querySelector('.top-form');
-            formPhone = formConnect.querySelector('.form-phone');
-            formMessage = formConnect.querySelector('.mess');
-
-            if(regText.test(formName.value) && regPhone.test(formPhone.value) && regText.test(formMessage.value)) {
-                formName.style.border = '';
-                formPhone.style.border = '';
-                formMessage.style.border = '';
-                const request = new XMLHttpRequest();
-                request.addEventListener('readystatechange', () => {
-                    loaded.style.display = 'block';
-
-                    if(request.readyState !== 4) {
-                        return;
-                    }
-
-                    if(request.status === 200) {
-                        loaded.style.display = 'none';
-                        statusMessage.textContent = successMessage;
-                    } else {
-                        loaded.style.display = 'none';
-                        statusMessage.textContent = errorMessage;
-                    }
-                });
-
-                request.open('POST', './server.php');
-                request.setRequestHeader('Content-Type', 'multipart/form-data');
-
-                const formData = new FormData(formConnect);
-
-                formData.forEach( (value, key) => {
-                    formData[key] = value;
-                });
-
-                request.send(formData);
-
-                setTimeout(() => {
-                    statusMessage.textContent = '';
-                }, 5000);
-            } else {
-                statusMessage.textContent = 'Некорректные данные!';
-                setTimeout(() => {
-                    statusMessage.textContent = '';
-                }, 5000);
-                if(!regText.test(formName.value)) {
-                    formName.style.border = '2px solid red';
-                }
-                if(!regText.test(formMessage)) {
-                    formMessage.style.border = '2px solid red';
-                }
-                if(!regPhone.test(formPhone.value)) {
-                    formPhone.style.border = '2px solid red';
-                }
-                return;
-            }
-
-            clearInput(formConnectInputs);
+                clearInput(formName, formPhone, formMessage, formMail);
+            });
         });
     };
     sendForm();
