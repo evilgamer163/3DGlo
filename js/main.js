@@ -443,7 +443,7 @@ window.addEventListener('DOMContentLoaded', () => {
                                 formData[key] = value;
                             });
 
-                            request.send(formData);
+                            request.send(JSON.stringify(formData));
 
                             setTimeout(() => {
                                 statusMessage.textContent = '';
