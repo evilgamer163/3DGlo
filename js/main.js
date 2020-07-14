@@ -378,19 +378,12 @@ window.addEventListener('DOMContentLoaded', () => {
     };
     calculate();
 
-    //send-ajax=form
+    //send-ajax-form
     const sendForm = () => {
-        const clearInput = (formName, formPhone, formMessage, formMail) => {
-            formName.value = '';
-            formPhone.value = '';
-            if(formMessage) formMessage.value = '';
-            formMail.value = '';
-        };
-
         const errorMessage = 'Что то пошло не так как мы планировали...',
             successMessage = 'Спасибо! Скоро с вами свяжутся!',
             regText = /[а-яА-Я]/,
-            regPhone = /^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$/;
+            regPhone = /[^\D]/;
 
         const loaded = document.querySelector('.loaded');
 
@@ -400,29 +393,30 @@ window.addEventListener('DOMContentLoaded', () => {
             color: #1DA3FE;
         `;
 
-        let formName, formPhone, formMessage, formMail;
-
         const forms = document.querySelectorAll('form');
+        
         forms.forEach( item => {
-            item.addEventListener('submit', (event) => {
-                event.preventDefault();
-                item.append(statusMessage);
+                item.addEventListener('input', (event) => {
+                    let target = event.target;
+                    
+                    if((target.name === 'user_name' || target.name === 'user_message') && !regText.test(target.value)) {
+                        target.value = '';
+                        target.style.border = '2px solid red';
+                        target.placeholder = 'Поддерживается только Кириллица!';
+                    }
+                    if(target.name === 'user_phone' && !regPhone.test(target.value)) {
+                        target.value = '';
+                        target.style.border = '2px solid red';
+                        target.placeholder = 'Необходимо ввести номер телефона!';
+                    }
+                    // if(target.name === 'user_message' && !regText.test(target.value))
+                });
 
-                formName = item.querySelector('input[name="user_name"]');
-                formPhone = item.querySelector('input[name="user_phone"]');
-                formMessage = item.querySelector('input[name="user_message"]');
-                formMail = item.querySelector('input[name="user_email"]');
-                if((regText.test(formName.value) && regPhone.test(formPhone.value)) ||
-                    (regText.test(formName.value) && regPhone.test(formPhone.value) && regText.test(formMessage.value))) {
-                    formName.style.border = '';
-                    formPhone.style.border = '';
-                    if(formMessage) formMessage.style.border = '';
-
-                    const outputMessage = (msg) => {
-                        loaded.style.display = 'none';
-                        statusMessage.textContent = msg;
-                    };
-
+                item.addEventListener('submit', (event) => {
+                    event.preventDefault();
+                    item.append(statusMessage);
+                    let inputs = item.querySelectorAll('input');
+                    
                     const getData = () => {
                         return new Promise((resolve, reject) => {
                             const request = new XMLHttpRequest();
@@ -450,35 +444,27 @@ window.addEventListener('DOMContentLoaded', () => {
                             });
 
                             request.send(formData);
+
+                            setTimeout(() => {
+                                statusMessage.textContent = '';
+                            }, 5000);
                         });
+                    };
+
+                    const outputMessage = (msg) => {
+                        loaded.style.display = 'none';
+                        statusMessage.textContent = msg;
                     };
 
                     getData()
                         .then(outputMessage)
                         .catch(err => console.error(err));
-                    
 
-                    setTimeout(() => {
-                        statusMessage.textContent = '';
-                    }, 5000);
-                } else {
-                    statusMessage.textContent = 'Некорректные данные!';
-                    setTimeout(() => {
-                        statusMessage.textContent = '';
-                    }, 5000);
-                    if(!regText.test(formName.value)) {
-                        formName.style.border = '2px solid red';
-                    }
-                    if(formMessage && !regText.test(formMessage.value)) {
-                        formMessage.style.border = '2px solid red';
-                    }
-                    if(!regPhone.test(formPhone.value)) {
-                        formPhone.style.border = '2px solid red';
-                    }
-                    return;
-                }
-                clearInput(formName, formPhone, formMessage, formMail);
-            });
+                    inputs.forEach( item => {
+                        item.value = '';
+                        item.style.border = '';
+                    });
+                });
         });
     };
     sendForm();
