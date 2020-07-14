@@ -41,7 +41,7 @@ window.addEventListener('DOMContentLoaded', () => {
         };
         updateClock();
     };
-    setInterval(countTimer, 1000, '15 july 2020');
+    setInterval(countTimer, 1000, '22 july 2020');
 
     //menu
     const toggleMenu = () => {
@@ -417,33 +417,46 @@ window.addEventListener('DOMContentLoaded', () => {
                     formName.style.border = '';
                     formPhone.style.border = '';
                     if(formMessage) formMessage.style.border = '';
-                    const request = new XMLHttpRequest();
-                    request.addEventListener('readystatechange', () => {
-                        loaded.style.display = 'block';
 
-                        if(request.readyState !== 4) {
-                            return;
-                        }
+                    const outputMessage = (msg) => {
+                        loaded.style.display = 'none';
+                        statusMessage.textContent = msg;
+                    };
 
-                        if(request.status === 200) {
-                            loaded.style.display = 'none';
-                            statusMessage.textContent = successMessage;
-                        } else {
-                            loaded.style.display = 'none';
-                            statusMessage.textContent = errorMessage;
-                        }
-                    });
+                    const getData = () => {
+                        return new Promise((resolve, reject) => {
+                            const request = new XMLHttpRequest();
+                            request.addEventListener('readystatechange', () => {
+                                loaded.style.display = 'block';
 
-                    request.open('POST', './server.php');
-                    request.setRequestHeader('Content-Type', 'multipart/form-data');
+                                if(request.readyState !== 4) {
+                                    return;
+                                }
 
-                    const formData = new FormData(item);
+                                if(request.status === 200) {
+                                    resolve(successMessage);
+                                } else {
+                                    reject(errorMessage);
+                                }
+                            });
 
-                    formData.forEach( (value, key) => {
-                        formData[key] = value;
-                    });
+                            request.open('POST', './server.php');
+                            request.setRequestHeader('Content-Type', 'multipart/form-data');
 
-                    request.send(formData);
+                            const formData = new FormData(item);
+
+                            formData.forEach( (value, key) => {
+                                formData[key] = value;
+                            });
+
+                            request.send(formData);
+                        });
+                    };
+
+                    getData()
+                        .then(outputMessage)
+                        .catch(err => console.error(err));
+                    
 
                     setTimeout(() => {
                         statusMessage.textContent = '';
