@@ -402,52 +402,33 @@ window.addEventListener('DOMContentLoaded', () => {
                     if((target.name === 'user_name' || target.name === 'user_message') && !regText.test(target.value)) {
                         target.value = '';
                         target.style.border = '2px solid red';
-                        target.placeholder = 'Поддерживается только Кириллица!';
+                        target.placeholder = 'Only russian word!';
                     }
                     if(target.name === 'user_phone' && !regPhone.test(target.value)) {
                         target.value = '';
                         target.style.border = '2px solid red';
-                        target.placeholder = 'Необходимо ввести номер телефона!';
+                        target.placeholder = 'Only numbers!';
                     }
-                    // if(target.name === 'user_message' && !regText.test(target.value))
                 });
 
                 item.addEventListener('submit', (event) => {
                     event.preventDefault();
                     item.append(statusMessage);
+                    loaded.style.display = 'block';
+
                     let inputs = item.querySelectorAll('input');
+
+                    const formData = new FormData(item);
+
+                    formData.forEach( (value, key) => {
+                        formData[key] = value;
+                    });
                     
-                    const getData = () => {
-                        return new Promise((resolve, reject) => {
-                            const request = new XMLHttpRequest();
-                            request.addEventListener('readystatechange', () => {
-                                loaded.style.display = 'block';
-
-                                if(request.readyState !== 4) {
-                                    return;
-                                }
-
-                                if(request.status === 200) {
-                                    resolve(successMessage);
-                                } else {
-                                    reject(errorMessage);
-                                }
-                            });
-
-                            request.open('POST', './server.php');
-                            request.setRequestHeader('Content-Type', 'multipart/form-data');
-
-                            const formData = new FormData(item);
-
-                            formData.forEach( (value, key) => {
-                                formData[key] = value;
-                            });
-
-                            request.send(JSON.stringify(formData));
-
-                            setTimeout(() => {
-                                statusMessage.textContent = '';
-                            }, 5000);
+                    const getData = (data) => {
+                        return fetch('./server.php', {
+                            method: 'POST',
+                            headers: {'Content-Type': 'multipart/form-data'},
+                            body: JSON.stringify(data)
                         });
                     };
 
@@ -456,9 +437,21 @@ window.addEventListener('DOMContentLoaded', () => {
                         statusMessage.textContent = msg;
                     };
 
-                    getData()
-                        .then(outputMessage)
-                        .catch(err => console.error(err));
+                    getData(formData)
+                        .then((response) => {
+                            if(response.status !== 200) {
+                                throw new Error('Ошибка! Статус ответа не равен 200!');
+                            }
+                            outputMessage(successMessage);
+                        })
+                        .catch((error) => {
+                            outputMessage(errorMessage);
+                            console.error(error);
+                        });
+
+                    setTimeout(() => {
+                        statusMessage.textContent = '';
+                    }, 5000);
 
                     inputs.forEach( item => {
                         item.value = '';
