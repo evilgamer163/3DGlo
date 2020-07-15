@@ -3,6 +3,9 @@
 import elementClosest from 'element-closest';
 import "@babel/polyfill";
 import 'nodelist-foreach-polyfill';
+import smoothscroll from 'smoothscroll-polyfill';
+
+smoothscroll.polyfill();
 elementClosest(window);
 
 import countTimer from './modules/countTimer';

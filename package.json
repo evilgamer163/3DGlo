@@ -1,7 +1,6 @@
 {
   "name": "3dglo",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "dev": "webpack-dev-server --open --mode=development",
@@ -31,6 +30,9 @@
     "element-closest": "^3.0.2",
     "es6-promise": "^4.2.8",
     "formdata-polyfill": "^3.0.20",
-    "nodelist-foreach-polyfill": "^1.2.0"
-  }
+    "node-modules": "^1.0.1",
+    "nodelist-foreach-polyfill": "^1.2.0",
+    "smoothscroll-polyfill": "^0.4.4"
+  },
+  "description": ""
 }
