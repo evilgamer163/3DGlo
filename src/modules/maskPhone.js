@@ -28,9 +28,9 @@ const maskPhone = () => {
                 });
             i = newValue.indexOf("_");
 
-            if (i != -1) {
+            if (i !== -1) {
                 i < 5 && (i = 3);
-                newValue = newValue.slice(0, i)
+                newValue = newValue.slice(0, i);
             }
 
             let reg = matrix.substr(0, input.value.length).replace(/_+/g,
@@ -41,7 +41,7 @@ const maskPhone = () => {
             if (!reg.test(input.value) || input.value.length < 5 || keyCode > 47 && keyCode < 58) {
                 input.value = newValue;
             }
-            if (event.type == "blur" && input.value.length < 5) {
+            if (event.type === "blur" && input.value.length < 5) {
                 input.value = "";
             }
         };
