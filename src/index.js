@@ -17,6 +17,7 @@ import slider from './modules/slider';
 import replacePhoto from './modules/replacePhoto';
 import calculate from './modules/calc';
 import sendForm from './modules/sendForm';
+import maskPhone from './modules/maskPhone';
 
 setInterval(countTimer, 1000, '22 july 2020');
 toggleMenu();
@@ -27,3 +28,4 @@ slider();
 replacePhoto();
 calculate();
 sendForm();
+maskPhone();
