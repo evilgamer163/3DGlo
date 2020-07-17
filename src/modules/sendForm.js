@@ -65,6 +65,10 @@ const sendForm = () => {
             setTimeout(() => {
                 statusMessage.textContent = '';
             }, 5000);
+
+            let inputs = item.querySelectorAll('input').forEach( elem => {
+                elem.value = '';
+            });
         });
     });
 };
