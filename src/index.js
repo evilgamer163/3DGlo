@@ -8,6 +8,7 @@ import smoothscroll from 'smoothscroll-polyfill';
 smoothscroll.polyfill();
 elementClosest(window);
 
+
 import countTimer from './modules/countTimer';
 import toggleMenu from './modules/toggleMenu';
 import togglePopup from './modules/togglePopup';
@@ -27,5 +28,5 @@ tabs();
 slider();
 replacePhoto();
 calculate();
-sendForm();
 maskPhone();
+sendForm();

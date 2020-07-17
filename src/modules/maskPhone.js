@@ -2,7 +2,6 @@
 
 const maskPhone = () => {
     const inputsPhone = document.querySelectorAll('input[name="user_phone"]');
-    console.log(inputsPhone);
 
     inputsPhone.forEach((input) => {
         let keyCode;
@@ -41,8 +40,10 @@ const maskPhone = () => {
             if (!reg.test(input.value) || input.value.length < 5 || keyCode > 47 && keyCode < 58) {
                 input.value = newValue;
             }
-            if (event.type === "blur" && input.value.length < 5) {
+            if (event.type === "blur" && input.value.length < 15) {
+                input.style.border = '2px solid red';
                 input.value = "";
+                
             }
         };
 
