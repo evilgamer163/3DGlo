@@ -68,6 +68,7 @@ const sendForm = () => {
 
             let inputs = item.querySelectorAll('input').forEach( elem => {
                 elem.value = '';
+                elem.style.border = '';
             });
         });
     });
