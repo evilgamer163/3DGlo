@@ -3,7 +3,7 @@
 const sendForm = () => {
     const errorMessage = 'Что то пошло не так как мы планировали...',
         successMessage = 'Спасибо! Скоро с вами свяжутся!',
-        regText = /[а-яА-Я]/,
+        regText = /^[а-яА-Я]+$/,
         regPhone = /[\d]{7,10}/;
 
     const loaded = document.querySelector('.loaded');
